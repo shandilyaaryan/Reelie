@@ -25,7 +25,8 @@ const userSchema = new Schema<IUser>(
 );
 
 userSchema.pre("save", async function (next) {
-  if (this.isModified(this.password)) {
+  if (this.isNew || this.isModified("password")) {
+    // Only hash if it's a new document or password has changed
     this.password = await bcrypt.hash(this.password, 10);
   }
   next();

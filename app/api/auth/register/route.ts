@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import User from "@/models/User";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await res.json();
+    const { email, password } = await req.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -15,9 +15,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     await connectToDatabase();
 
-    const exitstingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
-    if (exitstingUser) {
+    if (existingUser) {
       return NextResponse.json(
         { error: "User is already registered" },
         { status: 400 }
@@ -33,7 +33,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
       { message: "User registered successfully" },
       { status: 201 }
     );
-  } catch {
+  } catch (error) {
+    console.error("Error registering user:", error);
     return NextResponse.json(
       { error: "Failed to register user" },
       { status: 500 }
