@@ -23,6 +23,18 @@ export const connectToDatabase = async () => {
         };
 
         cached.promise = mongoose.connect(MONGODB_URL, opts).then(() => mongoose.connection);
-
     }
+
+    try {
+        cached.conn = await cached.promise; 
+    } catch (error) {
+        cached.promise = null;
+        if (error instanceof Error) {
+            throw error;
+        } else {
+            throw new Error(String(error));
+        }
+    }
+
+    return cached.conn;
 }
