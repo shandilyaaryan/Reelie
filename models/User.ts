@@ -10,7 +10,7 @@ export interface IUser {
 }
 
 const userSchema = new Schema<IUser>(
-{
+  {
     email: {
       type: String,
       required: true,
@@ -32,4 +32,5 @@ userSchema.pre("save", async function (next) {
 });
 
 const User = models?.User || model<IUser>("User", userSchema);
+
 export default User;
